@@ -1,20 +1,245 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="./style.css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>小田原 地下街おみくじ</title>
+<style>
+  html,body{height:100%;margin:0;font-family: "Hiragino Kaku Gothic Pro","Yu Gothic","Noto Sans JP",sans-serif;background:linear-gradient(#0b1220,#101827);color:#fff;display:flex;align-items:center;justify-content:center;}
+  .wrap{width:920px;max-width:95%;background:linear-gradient(180deg,#08101a 0%, #0d1720 100%);border-radius:16px;padding:22px;box-shadow:0 10px 30px rgba(0,0,0,.6);}
+  header{display:flex;align-items:center;gap:16px;margin-bottom:12px;}
+  header h1{font-size:20px;margin:0;}
+  .lantern-area{display:flex;gap:18px;align-items:center;}
+  .lantern{
+    width:140px;height:200px;background:linear-gradient(#ffefcf,#ffd79b);border-radius:70px;display:flex;align-items:center;justify-content:center;
+    color:#8b3e00;font-weight:700;font-size:48px;box-shadow:0 6px 18px rgba(0,0,0,.5), inset 0 -8px 24px rgba(0,0,0,.08);
+    transform-origin:50% 0%;transition:transform .35s ease;
+  }
+  .lantern.shake{animation:shake 0.7s;}
+  @keyframes shake{0%{transform:rotate(0)}20%{transform:rotate(-10deg)}40%{transform:rotate(8deg)}60%{transform:rotate(-6deg)}80%{transform:rotate(4deg)}100%{transform:rotate(0)}}
+  .controls{flex:1;}
+  .btn{
+    display:inline-block;padding:12px 18px;border-radius:10px;background:#ffb74d;color:#2b1700;font-weight:700;border:none;cursor:pointer;margin-right:8px;
+    box-shadow:0 6px 18px rgba(255,183,77,.12);
+  }
+  .btn:active{transform:translateY(2px)}
+  .hint{font-size:13px;color:#c6d3df;margin-top:8px}
+  .result{
+    margin-top:18px;background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));border-radius:12px;padding:18px;display:flex;gap:14px;align-items:center;
+    min-height:120px;
+  }
+  .card{
+    background:linear-gradient(180deg,#fff 0%, #f7f7f7 100%);color:#222;border-radius:10px;padding:12px;width:320px;height:180px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    box-shadow:0 6px 18px rgba(2,6,23,.35);
+  }
+  .card .kanji{font-size:64px;font-weight:900;}
+  .card .label{font-size:14px;color:#666;margin-top:6px}
+  .message{flex:1;color:#e7eefc;font-size:16px;line-height:1.5}
+  .meta{font-size:13px;color:#b9c9df;margin-top:10px}
+  footer{margin-top:14px;display:flex;justify-content:space-between;align-items:center}
+  .small{font-size:12px;color:#9fb0d0}
+  @media(max-width:640px){
+    .lantern{width:110px;height:160px;font-size:40px}
+    .card{width:240px;height:150px}
+  }
+</style>
 </head>
 <body>
-    <div class="omikuji">
-        <h1 class="omikuji-headline">おみくじアプリ</h1>
-        <div class="omikuji-result">
-            <img id="js-result" src="./images/omikuji.png" alt="omikuji">
+  <div class="wrap" role="application">
+    <header>
+      <div class="lantern-area">
+        <div id="lantern" class="lantern">城</div>
+      </div>
+      <div class="controls">
+        <h1>小田原 地下街 おみくじ</h1>
+        <div class="hint">提灯をひっぱるイメージで「おみくじをひく」を押してね。観光の記念になるメッセージを表示します。</div>
+        <div style="margin-top:10px;">
+          <button id="drawBtn" class="btn">おみくじをひく</button>
+          <button id="downloadBtn" class="btn" style="display:none;background:#9dd0ff;color:#063a54">画像をダウンロード</button>
         </div>
-        <button type="button" class="omikuji-button" id="js-button">おみくじを引く</button>
-    </div>
+      </div>
+    </header>
 
-    <script src="./script.js"></script>
+    <section class="result" aria-live="polite">
+      <div class="card" id="cardPreview">
+        <div class="kanji" id="cardKanji">城</div>
+        <div class="label" id="cardFortune">大吉</div>
+      </div>
+      <div class="message" id="cardMessage">
+        ここに小田原らしいメッセージが表示されます。<br>例：小田原城の天守のように高みへ登る運気。旅の記念に！
+        <div class="meta" id="cardMeta">— 小田原 地下街オミクジ</div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="small">※この画面をダウンロードして旅の思い出に。</div>
+      <div class="small">デザインの文言は自由に編集できます</div>
+    </footer>
+  </div>
+
+<script>
+(() => {
+  // おみくじのデータ（観光記念向け）
+  const pool = [
+    // format: {kanji, fortune, emoji, message}
+    {kanji:"城", fortune:"大吉", emoji:"🏯", message:"小田原城の天守のごとく高みへ登る運気。旅の始まりに大きなチャンス！"},
+    {kanji:"城", fortune:"中吉", emoji:"🛡️", message:"城下の縁に恵まれるとき。新しい出会いが幸運を運ぶ。"},
+    {kanji:"城", fortune:"小吉", emoji:"🪨", message:"石垣の如くじっくりと運が固まる。焦らず歩もう。"},
+    {kanji:"海", fortune:"大吉", emoji:"🌊", message:"相模湾の大漁のごとく幸運があふれる旅に！"},
+    {kanji:"海", fortune:"中吉", emoji:"🐟", message:"アジの旨味のように少しずつ楽しみが深まる時。"},
+    {kanji:"海", fortune:"小吉", emoji:"⛵", message:"小舟のように慎重に進めば吉。安全第一で動こう。"},
+    {kanji:"梅", fortune:"大吉", emoji:"🌸", message:"梅の花のごとく嬉しいことが開花する予感。記念にふさわしい日！"},
+    {kanji:"梅", fortune:"中吉", emoji:"🍯", message:"梅干しの酸味が力に。試練が味わいになるとき。"},
+    {kanji:"魚", fortune:"吉", emoji:"🐠", message:"港町の恵みあり。食や新発見が旅を彩るでしょう。"},
+    {kanji:"祭", fortune:"大吉", emoji:"🎎", message:"提灯と祭の賑わいのように、楽しい出会いが待っています！"},
+    {kanji:"祭", fortune:"小吉", emoji:"🎐", message:"お祭りの準備は着実に。小さな笑顔が大きな思い出に。"},
+    {kanji:"光", fortune:"吉", emoji:"✨", message:"地下でも光は見える。新しい道が開ける予感！"},
+    {kanji:"道", fortune:"中吉", emoji:"🛣️", message:"東海道の心で進め。道中の出会いが幸運を呼ぶ。"},
+    {kanji:"食", fortune:"吉", emoji:"🍡", message:"ご当地グルメが運を呼ぶ日。美味しい発見を楽しんで。"},
+    {kanji:"浪", fortune:"凶", emoji:"🌊", message:"波が荒い日。旅の予定は慎重に。切り替えが吉。"},
+    {kanji:"城", fortune:"凶", emoji:"⚔️", message:"一時のつまずきあり。小さな準備で再び立て直せる。"}
+  ];
+
+  // DOM
+  const lantern = document.getElementById('lantern');
+  const drawBtn = document.getElementById('drawBtn');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const cardKanji = document.getElementById('cardKanji');
+  const cardFortune = document.getElementById('cardFortune');
+  const cardMessage = document.getElementById('cardMessage');
+  const cardMeta = document.getElementById('cardMeta');
+  const cardPreview = document.getElementById('cardPreview');
+
+  // helper random
+  function rand(a){ return Math.floor(Math.random()*a); }
+
+  function showResult(item) {
+    cardKanji.textContent = item.kanji;
+    cardFortune.textContent = item.fortune;
+    // message area: emoji + message + meta
+    cardMessage.innerHTML = `<div style="font-size:28px;margin-bottom:8px">${item.emoji} <strong style="font-size:18px">${item.kanji} — ${item.fortune}</strong></div><div style="font-size:15px;line-height:1.6">${item.message}</div><div class="meta" style="margin-top:10px;color:#b9c9df">— 小田原 地下街 おみくじ（記念カード）</div>`;
+    downloadBtn.style.display = 'inline-block';
+    // update lantern kanji too
+    lantern.textContent = item.kanji;
+  }
+
+  function animateLantern() {
+    lantern.classList.remove('shake');
+    // force reflow to restart animation
+    void lantern.offsetWidth;
+    lantern.classList.add('shake');
+  }
+
+  drawBtn.addEventListener('click', ()=> {
+    animateLantern();
+    drawBtn.disabled = true;
+    drawBtn.textContent = '結果を表示中…';
+    // simulate draw delay
+    setTimeout(()=> {
+      const item = pool[rand(pool.length)];
+      showResult(item);
+      drawBtn.disabled = false;
+      drawBtn.textContent = 'おみくじをひく';
+    }, 800);
+  });
+
+  // Create PNG from the card + message area using canvas
+  function downloadCardImage() {
+    // create canvas
+    const w = 920, h = 480;
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+
+    // background
+    const grad = ctx.createLinearGradient(0,0,0,h);
+    grad.addColorStop(0,'#08101a'); grad.addColorStop(1,'#0d1720');
+    ctx.fillStyle = grad; ctx.fillRect(0,0,w,h);
+
+    // left card box
+    ctx.fillStyle = '#fff';
+    const cardX = 36, cardY = 48, cardW = 420, cardH = 384, r=12;
+    // rounded rect
+    roundRect(ctx, cardX, cardY, cardW, cardH, r, true, false);
+    // kanji big
+    ctx.fillStyle = '#222';
+    ctx.font = 'bold 140px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(cardKanji.textContent, cardX + cardW/2, cardY + 170);
+
+    // fortune label
+    ctx.font = '700 30px sans-serif';
+    ctx.fillText(cardFortune.textContent, cardX + cardW/2, cardY + 230);
+
+    // right message box (white text)
+    ctx.fillStyle = 'rgba(255,255,255,0.04)';
+    roundRect(ctx, 480, 48, 404, 384, r, true, false);
+
+    // message content (we will draw the inner HTML's text)
+    ctx.fillStyle = '#e7eefc';
+    ctx.font = '600 22px sans-serif';
+    ctx.textAlign = 'left';
+    // extract plain text (emoji + message)
+    const plain = extractPlainText(cardMessage);
+    // wrap text
+    wrapText(ctx, plain, 500, 120, 380, 28);
+
+    // footer meta
+    ctx.font = '14px sans-serif';
+    ctx.fillStyle = '#9fb0d0';
+    ctx.fillText('— 小田原 地下街 おみくじ（記念カード）', 500, 420);
+
+    // create download
+    const link = document.createElement('a');
+    link.download = 'odawara_omikuji.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }
+
+  function extractPlainText(el) {
+    // remove tags, keep emoji + text
+    return el.innerText || el.textContent || '';
+  }
+
+  function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+    const words = text.split(/\s+/);
+    let line = '';
+    let curY = y;
+    for (let n = 0; n < words.length; n++) {
+      const testLine = line + words[n] + ' ';
+      const metrics = ctx.measureText(testLine);
+      const testWidth = metrics.width;
+      if (testWidth > maxWidth && n > 0) {
+        ctx.fillText(line, x, curY);
+        line = words[n] + ' ';
+        curY += lineHeight;
+      } else {
+        line = testLine;
+      }
+    }
+    ctx.fillText(line, x, curY);
+  }
+
+  function roundRect(ctx, x, y, w, h, r, fill, stroke) {
+    if (typeof stroke === 'undefined') stroke = true;
+    if (typeof r === 'undefined') r = 5;
+    ctx.beginPath();
+    ctx.moveTo(x+r, y);
+    ctx.arcTo(x+w, y,   x+w, y+h, r);
+    ctx.arcTo(x+w, y+h, x,   y+h, r);
+    ctx.arcTo(x,   y+h, x,   y,   r);
+    ctx.arcTo(x,   y,   x+w, y,   r);
+    ctx.closePath();
+    if (fill) ctx.fill();
+    if (stroke) ctx.stroke();
+  }
+
+  downloadBtn.addEventListener('click', downloadCardImage);
+
+  // initialize with a gentle sample
+  showResult(pool[0]);
+
+})();
+</script>
 </body>
 </html>
