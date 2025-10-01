@@ -7,9 +7,6 @@
   <style>
     body {
       font-family: 'Arial', sans-serif;
-      background: linear-gradient(#fff8e7, #ffeedd); /* ふんわり背景 */
-      background-image: url('https://i.imgur.com/EwHkpUx.png'); /* 和風提灯模様のサンプル */
-      background-repeat: repeat;
       text-align: center;
       margin: 0;
       padding: 0;
@@ -17,13 +14,23 @@
       flex-direction: column;
       justify-content: flex-start;
       min-height: 100vh;
+      /* 和風の縦ストライプ背景 */
+      background: repeating-linear-gradient(
+        90deg,
+        #fff8e7,
+        #fff8e7 20px,
+        #ffe0c0 20px,
+        #ffe0c0 40px
+      );
     }
+
     h1 {
       color: #d32f2f;
       margin: 30px 0 10px 0;
       font-size: 2.2em;
       text-shadow: 1px 1px 2px #fff;
     }
+
     #lantern {
       width: 65vw;
       max-width: 280px;
@@ -43,6 +50,7 @@
       box-shadow: 0 8px 12px rgba(0,0,0,0.3);
       position: relative;
     }
+
     #lantern::before, #lantern::after {
       content: '';
       position: absolute;
@@ -54,6 +62,7 @@
     }
     #lantern::before { top: -12px; }
     #lantern::after { bottom: -12px; }
+
     button {
       background: #ff8a65;
       color: white;
@@ -70,25 +79,29 @@
       background: #ff7043;
       transform: scale(1.05);
     }
+
     #result {
-      font-size: 2em;
+      font-size: 2em; /* 運勢大きめ */
       margin-top: 25px;
       color: #d32f2f;
       font-weight: bold;
       text-shadow: 1px 1px 2px #fff;
     }
+
     #extraMessage {
       font-size: 1.2em;
       margin-top: 12px;
       color: #555;
       padding: 0 15px;
     }
+
     #recommendation {
       margin-top: 15px;
       font-size: 1.1em;
       color: #444;
       padding: 0 15px;
     }
+
     @media (max-width: 480px) {
       h1 { font-size: 2em; }
       #lantern { width: 70vw; height: 80vw; font-size: 20vw; }
