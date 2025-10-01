@@ -1,15 +1,24 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>小田原 地下街 おみくじ（縦画面スマホ版）</title>
+<title>小田原 地下街 おみくじ</title>
 <style>
 body,html{margin:0;padding:0;font-family:"Hiragino Kaku Gothic Pro","Yu Gothic","Noto Sans JP",sans-serif;background:linear-gradient(#0b1220,#101827);color:#fff;display:flex;justify-content:center;}
 .wrap{width:100%;max-width:480px;padding:16px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;}
 header{text-align:center;margin-bottom:16px;}
 header h1{font-size:22px;margin-bottom:12px;}
-.lantern{width:140px;height:180px;background:linear-gradient(#ffefcf,#ffd79b);border-radius:70px;display:flex;align-items:center;justify-content:center;font-size:52px;font-weight:700;margin:0 auto 12px;transform-origin:50% 0%;transition:transform .35s ease;box-shadow:0 6px 18px rgba(0,0,0,.5), inset 0 -8px 24px rgba(0,0,0,.08);}
+.lantern{
+  width:140px;height:180px;
+  background:linear-gradient(#ffefcf,#ffd79b);
+  border-radius:70px;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 12px;
+  transform-origin:50% 0%;
+  transition:transform .35s ease;
+  box-shadow:0 6px 18px rgba(0,0,0,.5), inset 0 -8px 24px rgba(0,0,0,.08);
+}
 .lantern.shake{animation:shake 0.7s;}
 @keyframes shake{0%{transform:rotate(0)}20%{transform:rotate(-10deg)}40%{transform:rotate(8deg)}60%{transform:rotate(-6deg)}80%{transform:rotate(4deg)}100%{transform:rotate(0)}}
 .btn{padding:16px 0;border-radius:12px;background:#ffb74d;color:#2b1700;font-weight:700;border:none;margin:8px 0;width:90%;font-size:18px;box-shadow:0 6px 18px rgba(255,183,77,.2);}
