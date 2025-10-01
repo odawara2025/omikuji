@@ -15,7 +15,7 @@ header h1{font-size:22px;margin-bottom:12px;}
 .btn{padding:16px 0;border-radius:12px;background:#ffb74d;color:#2b1700;font-weight:700;border:none;margin:8px 0;width:90%;font-size:18px;box-shadow:0 6px 18px rgba(255,183,77,.2);}
 .btn:active{transform:translateY(2px);}
 .result{width:100%;background:linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));border-radius:14px;padding:16px;margin-top:16px;display:flex;flex-direction:column;align-items:center;min-height:220px;}
-.card{width:90%;background:#fff;color:#222;border-radius:12px;padding:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:12px;}
+.card{width:90%;background:#fff;color:#222;border-radius:12px;padding:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:12px;display:none;}
 .card .kanji{font-size:56px;font-weight:900;}
 .card .label{font-size:20px;color:#666;margin-top:6px;}
 .message{color:#e7eefc;font-size:16px;line-height:1.6;text-align:center;margin-bottom:8px;}
@@ -31,7 +31,7 @@ footer{font-size:12px;color:#9fb0d0;text-align:center;margin-top:8px;}
   </header>
   <button id="drawBtn" class="btn">おみくじをひく</button>
   <div class="result">
-    <div class="card" id="cardPreview" style="display:none;">
+    <div class="card" id="cardPreview">
       <div class="kanji" id="cardKanji"></div>
       <div class="label" id="cardFortune"></div>
     </div>
