@@ -167,7 +167,6 @@ const omikujiSet = [
 ];
 
 const btn = document.getElementById("drawBtn");
-const lantern = document.getElementById("lantern");
 const paper = document.getElementById("omikuji-paper");
 const kanjiEl = document.getElementById("omikuji-kanji");
 const result = document.getElementById("result");
@@ -178,4 +177,14 @@ btn.addEventListener("click", () => {
   const index = Math.floor(Math.random() * omikujiSet.length);
   const pick = omikujiSet[index];
 
-  kanjiEl.textContent = pick.kan
+  kanjiEl.textContent = pick.kanji;
+  kanjiEl.style.color = pick.color;
+  result.textContent = pick.fortune;
+  extraMessage.textContent = pick.message;
+  recommendation.textContent = pick.recommendation;
+
+  paper.classList.add("show");
+});
+</script>
+</body>
+</html>
