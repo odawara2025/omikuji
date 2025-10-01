@@ -1,24 +1,24 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>小田原 地下街 おみくじ（スマホ版）</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小田原 地下街 おみくじ（縦画面スマホ版）</title>
 <style>
-html,body{margin:0;padding:0;font-family:"Hiragino Kaku Gothic Pro","Yu Gothic","Noto Sans JP",sans-serif;background:linear-gradient(#0b1220,#101827);color:#fff;display:flex;justify-content:center;}
+body,html{margin:0;padding:0;font-family:"Hiragino Kaku Gothic Pro","Yu Gothic","Noto Sans JP",sans-serif;background:linear-gradient(#0b1220,#101827);color:#fff;display:flex;justify-content:center;}
 .wrap{width:100%;max-width:480px;padding:16px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;}
-header{width:100%;text-align:center;margin-bottom:12px;}
-header h1{font-size:20px;margin-bottom:4px;}
-.lantern{width:120px;height:160px;background:linear-gradient(#ffefcf,#ffd79b);border-radius:60px;display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:700;margin:0 auto;transform-origin:50% 0%;transition:transform .35s ease;box-shadow:0 4px 12px rgba(0,0,0,.4),inset 0 -6px 18px rgba(0,0,0,.08);}
+header{text-align:center;margin-bottom:16px;}
+header h1{font-size:22px;margin-bottom:12px;}
+.lantern{width:140px;height:180px;background:linear-gradient(#ffefcf,#ffd79b);border-radius:70px;display:flex;align-items:center;justify-content:center;font-size:52px;font-weight:700;margin:0 auto 12px;transform-origin:50% 0%;transition:transform .35s ease;box-shadow:0 6px 18px rgba(0,0,0,.5), inset 0 -8px 24px rgba(0,0,0,.08);}
 .lantern.shake{animation:shake 0.7s;}
 @keyframes shake{0%{transform:rotate(0)}20%{transform:rotate(-10deg)}40%{transform:rotate(8deg)}60%{transform:rotate(-6deg)}80%{transform:rotate(4deg)}100%{transform:rotate(0)}}
-.btn{padding:14px 20px;border-radius:10px;background:#ffb74d;color:#2b1700;font-weight:700;border:none;margin:8px auto;display:block;font-size:16px;box-shadow:0 4px 12px rgba(255,183,77,.2);width:80%;}
-.btn:active{transform:translateY(2px)}
-.result{width:100%;background:linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));border-radius:12px;padding:12px;margin-top:16px;display:flex;flex-direction:column;align-items:center;min-height:180px;}
-.card{width:90%;background:#fff;color:#222;border-radius:10px;padding:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:12px;}
-.card .kanji{font-size:48px;font-weight:900;}
-.card .label{font-size:18px;color:#666;margin-top:4px;}
-.message{color:#e7eefc;font-size:16px;line-height:1.5;text-align:center;margin-bottom:6px;}
+.btn{padding:16px 0;border-radius:12px;background:#ffb74d;color:#2b1700;font-weight:700;border:none;margin:8px 0;width:90%;font-size:18px;box-shadow:0 6px 18px rgba(255,183,77,.2);}
+.btn:active{transform:translateY(2px);}
+.result{width:100%;background:linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));border-radius:14px;padding:16px;margin-top:16px;display:flex;flex-direction:column;align-items:center;min-height:220px;}
+.card{width:90%;background:#fff;color:#222;border-radius:12px;padding:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:12px;}
+.card .kanji{font-size:56px;font-weight:900;}
+.card .label{font-size:20px;color:#666;margin-top:6px;}
+.message{color:#e7eefc;font-size:16px;line-height:1.6;text-align:center;margin-bottom:8px;}
 .meta{font-size:12px;color:#b9c9df;}
 footer{font-size:12px;color:#9fb0d0;text-align:center;margin-top:8px;}
 </style>
@@ -87,7 +87,7 @@ drawBtn.addEventListener('click',()=>{
   },600);
 });
 
-// ダウンロード機能（簡易版）
+// ダウンロード機能
 downloadBtn.addEventListener('click',()=>{
   window.scrollTo(0,0);
   html2canvas(document.querySelector(".wrap")).then(canvas=>{
@@ -98,7 +98,7 @@ downloadBtn.addEventListener('click',()=>{
   });
 });
 
-// html2canvasの読み込み
+// html2canvas読み込み
 const script=document.createElement('script');
 script.src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
 document.body.appendChild(script);
