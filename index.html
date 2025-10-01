@@ -1,134 +1,137 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>小田原 地下街 おみくじ</title>
-<style>
-body,html{margin:0;padding:0;font-family:"Hiragino Kaku Gothic Pro","Yu Gothic","Noto Sans JP",sans-serif;background:linear-gradient(#0b1220,#101827);color:#fff;display:flex;justify-content:center;}
-.wrap{width:100%;max-width:480px;padding:16px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;}
-header{text-align:center;margin-bottom:16px;}
-header h1{font-size:22px;margin-bottom:12px;}
-.lantern{
-  width:140px;height:180px;
-  background:linear-gradient(#ffefcf,#ffd79b);
-  border-radius:70px;
-  display:flex;align-items:center;justify-content:center;
-  margin:0 auto 12px;
-  transform-origin:50% 0%;
-  transition:transform .35s ease;
-  box-shadow:0 6px 18px rgba(0,0,0,.5), inset 0 -8px 24px rgba(0,0,0,.08);
-}
-.lantern.shake{animation:shake 0.7s;}
-@keyframes shake{0%{transform:rotate(0)}20%{transform:rotate(-10deg)}40%{transform:rotate(8deg)}60%{transform:rotate(-6deg)}80%{transform:rotate(4deg)}100%{transform:rotate(0)}}
-.btn{padding:16px 0;border-radius:12px;background:#ffb74d;color:#2b1700;font-weight:700;border:none;margin:8px 0;width:90%;font-size:18px;box-shadow:0 6px 18px rgba(255,183,77,.2);}
-.btn:active{transform:translateY(2px);}
-.result{width:100%;background:linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));border-radius:14px;padding:16px;margin-top:16px;display:flex;flex-direction:column;align-items:center;min-height:220px;}
-.card{width:90%;background:#fff;color:#222;border-radius:12px;padding:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:12px;display:none;}
-.card .kanji{font-size:56px;font-weight:900;}
-.card .label{font-size:20px;color:#666;margin-top:6px;}
-.message{color:#e7eefc;font-size:16px;line-height:1.6;text-align:center;margin-bottom:8px;}
-.meta{font-size:12px;color:#b9c9df;}
-footer{font-size:12px;color:#9fb0d0;text-align:center;margin-top:8px;}
-</style>
+  <meta charset="UTF-8">
+  <title>おみくじ</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #fff8e7;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: #d32f2f;
+      margin-bottom: 20px;
+    }
+    #lantern {
+      width: 200px;
+      height: 250px;
+      margin: 20px auto;
+      background: radial-gradient(circle, #ff6666, #cc0000);
+      border: 5px solid #333;
+      border-radius: 100px / 140px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 50px;
+      font-weight: bold;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+    }
+    #lantern::before, #lantern::after {
+      content: '';
+      position: absolute;
+      width: 40%;
+      height: 8px;
+      background: #333;
+      left: 30%;
+    }
+    #lantern::before { top: -15px; }
+    #lantern::after { bottom: -15px; }
+    button {
+      background: #d32f2f;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      margin-top: 20px;
+      font-size: 18px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #result {
+      font-size: 22px;
+      margin-top: 20px;
+      color: #333;
+    }
+    #extraMessage {
+      font-size: 18px;
+      margin-top: 10px;
+      color: #555;
+    }
+    #recommendation {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #444;
+    }
+  </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <h1>小田原 地下街 おみくじ</h1>
-    <div class="lantern" id="lantern">?</div>
-  </header>
-  <button id="drawBtn" class="btn">おみくじをひく</button>
-  <div class="result">
-    <div class="card" id="cardPreview">
-      <div class="kanji" id="cardKanji"></div>
-      <div class="label" id="cardFortune"></div>
-    </div>
-    <div class="message" id="cardMessage">
-      タップして今日の運勢を確認しよう！
-      <div class="meta">— 小田原 地下街 おみくじ</div>
-    </div>
-  </div>
-  <button id="downloadBtn" class="btn" style="display:none;background:#9dd0ff;color:#063a54">画像をダウンロード</button>
-  <footer>※この画面を保存して旅の思い出に</footer>
-</div>
+  <h1>✨ おみくじ ✨</h1>
+  <div id="lantern">？</div>
+  <button id="drawBtn">おみくじを引く</button>
+  <div id="result"></div>
+  <div id="extraMessage"></div>
+  <div id="recommendation"></div>
 
-<script>
-(() => {
-const pool=[
-{kanji:"城",fortune:"大吉",emoji:"🏯",message:"小田原城の天守のごとく高みへ登る運気。旅の始まりに大きなチャンス！"},
-{kanji:"城",fortune:"中吉",emoji:"🛡️",message:"城下の縁に恵まれるとき。新しい出会いが幸運を運ぶ。"},
-{kanji:"城",fortune:"小吉",emoji:"🪨",message:"石垣の如くじっくりと運が固まる。焦らず歩もう。"},
-{kanji:"海",fortune:"大吉",emoji:"🌊",message:"相模湾の大漁のごとく幸運があふれる旅に！"},
-{kanji:"海",fortune:"中吉",emoji:"🐟",message:"アジの旨味のように少しずつ楽しみが深まる時。"},
-{kanji:"梅",fortune:"大吉",emoji:"🌸",message:"梅の花のごとく嬉しいことが開花する予感。記念にふさわしい日！"},
-{kanji:"魚",fortune:"吉",emoji:"🐠",message:"港町の恵みあり。食や新発見が旅を彩るでしょう。"},
-{kanji:"祭",fortune:"大吉",emoji:"🎎",message:"提灯と祭の賑わいのように、楽しい出会いが待っています！"},
-{kanji:"光",fortune:"吉",emoji:"✨",message:"地下でも光は見える。新しい道が開ける予感！"},
-{kanji:"道",fortune:"中吉",emoji:"🛣️",message:"東海道の心で進め。道中の出会いが幸運を呼ぶ。"},
-];
+  <script>
+    // 固定ペア（漢字 × 運勢 × メッセージ × HaRuNeおすすめ商品）
+    const omikujiSet = [
+      {
+        fortune: "大吉",
+        kanji: "灯",
+        message: "灯のようにあなたの周りが明るく照らされる一日です。",
+        recommendation: "おすすめ商品：和菓子 菜の花 の「焼きモンブラン」（渋皮栗入り）をHaRuNe内ムーンカフェでどうぞ。"
+      },
+      {
+        fortune: "吉",
+        kanji: "実",
+        message: "努力が実を結び、思わぬ成果が期待できます。",
+        recommendation: "おすすめ商品：小田原かまぼこ本陣の「揚げかまセット（8種）」で味の実りを感じて。"
+      },
+      {
+        fortune: "中吉",
+        kanji: "未",
+        message: "未来への準備を始めると良い流れが訪れます。",
+        recommendation: "おすすめ商品：小田原田中屋本店の「佃煮セット」で伝統の味を。"
+      },
+      {
+        fortune: "小吉",
+        kanji: "凪",
+        message: "心が穏やかに整う一日。小さな喜びを大切に。",
+        recommendation: "おすすめ商品：Takumi館の「リサイクルウッドキーホルダー」で自然を感じて。"
+      },
+      {
+        fortune: "末吉",
+        kanji: "歓",
+        message: "小さな喜びや出会いが、あなたの心を和ませます。",
+        recommendation: "おすすめ商品：和菓子 菜の花 の「月のうさぎ」など銘菓をお試しあれ。"
+      },
+      {
+        fortune: "凶",
+        kanji: "福",
+        message: "小さな不運もありますが、その先には福が待っています。",
+        recommendation: "おすすめ商品：最中工房 小田原種秀 の「小田原城最中」で福を呼び込みましょう。"
+      }
+    ];
 
-const lantern=document.getElementById('lantern');
-const drawBtn=document.getElementById('drawBtn');
-const downloadBtn=document.getElementById('downloadBtn');
-const cardKanji=document.getElementById('cardKanji');
-const cardFortune=document.getElementById('cardFortune');
-const cardMessage=document.getElementById('cardMessage');
-const cardPreview=document.getElementById('cardPreview');
+    const btn = document.getElementById("drawBtn");
+    const lantern = document.getElementById("lantern");
+    const result = document.getElementById("result");
+    const extraMessage = document.getElementById("extraMessage");
+    const recommendation = document.getElementById("recommendation");
 
-function rand(a){return Math.floor(Math.random()*a);}
-function animateLantern(){lantern.classList.remove('shake');void lantern.offsetWidth;lantern.classList.add('shake');}
-function showResult(item){
-  cardKanji.textContent=item.kanji;
-  cardFortune.textContent=item.fortune;
-  cardMessage.innerHTML=`<div style="font-size:28px;margin-bottom:6px">${item.emoji} <strong style="font-size:16px">${item.kanji} — ${item.fortune}</strong></div><div style="font-size:14px;line-height:1.5">${item.message}</div><div class="meta">— 小田原 地下街 おみくじ（記念カード）</div>`;
-  lantern.textContent=item.kanji;
-  cardPreview.style.display='flex';
-  downloadBtn.style.display='block';
-}
+    btn.addEventListener("click", () => {
+      const index = Math.floor(Math.random() * omikujiSet.length);
+      const pick = omikujiSet[index];
 
-// 今日1回制限チェック
-function canDrawToday(){
-  const lastDate = localStorage.getItem('odawara-omikuji-date');
-  const today = new Date().toISOString().slice(0,10);
-  return lastDate !== today;
-}
-
-drawBtn.addEventListener('click',()=>{
-  if(!canDrawToday()){
-    cardMessage.innerHTML='今日の運勢はもう引きました！<br>明日またお楽しみに。<div class="meta">— 小田原 地下街 おみくじ</div>';
-    return;
-  }
-  animateLantern();
-  drawBtn.disabled=true;
-  drawBtn.textContent='結果を表示中…';
-  setTimeout(()=>{
-    const result = pool[rand(pool.length)];
-    showResult(result);
-    const today = new Date().toISOString().slice(0,10);
-    localStorage.setItem('odawara-omikuji-date', today);
-    drawBtn.disabled=false;
-    drawBtn.textContent='おみくじをひく';
-  },600);
-});
-
-// ダウンロード機能
-downloadBtn.addEventListener('click',()=>{
-  window.scrollTo(0,0);
-  html2canvas(document.querySelector(".wrap")).then(canvas=>{
-    const link=document.createElement('a');
-    link.download='odawara_omikuji.png';
-    link.href=canvas.toDataURL("image/png");
-    link.click();
-  });
-});
-
-// html2canvas読み込み
-const script=document.createElement('script');
-script.src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
-document.body.appendChild(script);
-
-})();
-</script>
+      lantern.textContent = pick.kanji;
+      result.textContent = "今日の運勢: " + pick.fortune;
+      extraMessage.textContent = pick.message;
+      recommendation.textContent = pick.recommendation;
+    });
+  </script>
 </body>
 </html>
