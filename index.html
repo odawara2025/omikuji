@@ -10,7 +10,7 @@
     text-align: center;
     margin: 0;
     padding: 0;
-    background-color: #0b0b30; /* 夜空の暗闇 */
+    background-color: #0b0b30; /* 夜空 */
     color: white;
     display: flex;
     flex-direction: column;
@@ -20,27 +20,26 @@
 
   h1 {
     color: #ffd700;
-    margin: 25px 0 10px;
+    margin: 20px 0;
     font-size: 2em;
     text-shadow: 0 0 8px #ffd700;
   }
 
-  /* 白い小田原提灯風 */
+  /* シンプルな白い提灯 */
   #lantern {
     width: 200px;
     height: 260px;
-    margin: 20px auto;
     background-color: #fff;
     border: 3px solid #222;
     border-radius: 100px / 140px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #000;
     font-size: 80px;
     font-weight: bold;
-    box-shadow: 0 0 30px 10px rgba(255,255,200,0.5);
-    position: relative;
+    color: #000;
+    box-shadow: 0 0 25px 15px rgba(255,255,200,0.5);
+    margin: 20px 0;
   }
 
   button {
@@ -48,12 +47,11 @@
     color: white;
     border: none;
     padding: 14px 35px;
-    margin-top: 20px;
     font-size: 1.3em;
     border-radius: 50px;
     cursor: pointer;
     box-shadow: 0 5px 10px rgba(0,0,0,0.3);
-    transition: all 0.2s ease-in-out;
+    transition: 0.2s;
   }
 
   button:hover {
@@ -63,15 +61,15 @@
 
   #result {
     font-size: 2em;
-    margin-top: 25px;
     color: #ffd700;
     font-weight: bold;
+    margin-top: 20px;
     text-shadow: 0 0 6px #ffd700;
   }
 
   #extraMessage {
     font-size: 1.2em;
-    margin-top: 12px;
+    margin-top: 10px;
     color: #eee;
     padding: 0 15px;
   }
@@ -79,9 +77,15 @@
   #recommendation {
     font-size: 1.2em;
     margin-top: 15px;
-    color: #fff;
     font-weight: bold;
     padding: 0 15px;
+  }
+
+  @media (max-width:480px){
+    #lantern { width: 160px; height: 210px; font-size: 70px; }
+    button { font-size: 1.2em; padding: 12px 30px; }
+    #result { font-size: 1.8em; }
+    #extraMessage, #recommendation { font-size: 1em; }
   }
 </style>
 </head>
@@ -95,7 +99,7 @@
 
 <script>
 const omikujiSet = [
-  { fortune: "大吉", kanji: "灯", message: "灯のようにあなたの周りが明るく照らされる一日です。", recommendation: "おすすめ商品：和菓子 菜の花 の「焼きモンブラン」（渋皮栗入り）をHaRuNe内ムーンカフェでどうぞ。" },
+  { fortune: "大吉", kanji: "灯", message: "灯のようにあなたの周りが明るく照らされる一日です。", recommendation: "おすすめ商品：和菓子 菜の花 の「焼きモンブラン」をHaRuNe内ムーンカフェでどうぞ。" },
   { fortune: "吉", kanji: "実", message: "努力が実を結び、思わぬ成果が期待できます。", recommendation: "おすすめ商品：小田原かまぼこ本陣の「揚げかまセット（8種）」で味の実りを感じて。" },
   { fortune: "中吉", kanji: "未", message: "未来への準備を始めると良い流れが訪れます。", recommendation: "おすすめ商品：小田原田中屋本店の「佃煮セット」で伝統の味を。" },
   { fortune: "小吉", kanji: "凪", message: "心が穏やかに整う一日。小さな喜びを大切に。", recommendation: "おすすめ商品：Takumi館の「リサイクルウッドキーホルダー」で自然を感じて。" },
