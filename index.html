@@ -27,17 +27,17 @@ footer{font-size:12px;color:#9fb0d0;text-align:center;margin-top:8px;}
 <div class="wrap">
   <header>
     <h1>小田原 地下街 おみくじ</h1>
-    <div class="lantern" id="lantern">城</div>
+    <div class="lantern" id="lantern">?</div>
   </header>
   <button id="drawBtn" class="btn">おみくじをひく</button>
   <div class="result">
-    <div class="card" id="cardPreview">
-      <div class="kanji" id="cardKanji">城</div>
-      <div class="label" id="cardFortune">大吉</div>
+    <div class="card" id="cardPreview" style="display:none;">
+      <div class="kanji" id="cardKanji"></div>
+      <div class="label" id="cardFortune"></div>
     </div>
     <div class="message" id="cardMessage">
-      ここに小田原らしいメッセージが表示されます。<br>例：小田原城の天守のように高みへ登る運気。旅の記念に！
-      <div class="meta" id="cardMeta">— 小田原 地下街 おみくじ</div>
+      タップして今日の運勢を確認しよう！
+      <div class="meta">— 小田原 地下街 おみくじ</div>
     </div>
   </div>
   <button id="downloadBtn" class="btn" style="display:none;background:#9dd0ff;color:#063a54">画像をダウンロード</button>
@@ -65,6 +65,7 @@ const downloadBtn=document.getElementById('downloadBtn');
 const cardKanji=document.getElementById('cardKanji');
 const cardFortune=document.getElementById('cardFortune');
 const cardMessage=document.getElementById('cardMessage');
+const cardPreview=document.getElementById('cardPreview');
 
 function rand(a){return Math.floor(Math.random()*a);}
 function animateLantern(){lantern.classList.remove('shake');void lantern.offsetWidth;lantern.classList.add('shake');}
@@ -73,15 +74,30 @@ function showResult(item){
   cardFortune.textContent=item.fortune;
   cardMessage.innerHTML=`<div style="font-size:28px;margin-bottom:6px">${item.emoji} <strong style="font-size:16px">${item.kanji} — ${item.fortune}</strong></div><div style="font-size:14px;line-height:1.5">${item.message}</div><div class="meta">— 小田原 地下街 おみくじ（記念カード）</div>`;
   lantern.textContent=item.kanji;
+  cardPreview.style.display='flex';
   downloadBtn.style.display='block';
 }
 
+// 今日1回制限チェック
+function canDrawToday(){
+  const lastDate = localStorage.getItem('odawara-omikuji-date');
+  const today = new Date().toISOString().slice(0,10);
+  return lastDate !== today;
+}
+
 drawBtn.addEventListener('click',()=>{
+  if(!canDrawToday()){
+    cardMessage.innerHTML='今日の運勢はもう引きました！<br>明日またお楽しみに。<div class="meta">— 小田原 地下街 おみくじ</div>';
+    return;
+  }
   animateLantern();
   drawBtn.disabled=true;
   drawBtn.textContent='結果を表示中…';
   setTimeout(()=>{
-    showResult(pool[rand(pool.length)]);
+    const result = pool[rand(pool.length)];
+    showResult(result);
+    const today = new Date().toISOString().slice(0,10);
+    localStorage.setItem('odawara-omikuji-date', today);
     drawBtn.disabled=false;
     drawBtn.textContent='おみくじをひく';
   },600);
