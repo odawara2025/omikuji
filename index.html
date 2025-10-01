@@ -10,31 +10,140 @@
       text-align: center;
       margin: 0;
       padding: 0;
-      background-color: #fff8e7;
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
+      background: linear-gradient(to bottom, #0b0b30, #000010); /* 夜空風背景 */
+      color: white;
     }
 
     h1 {
-      color: #d32f2f;
+      color: #ffd700;
       margin: 25px 0 10px 0;
       font-size: 2em;
+      text-shadow: 0 0 8px #ffd700;
     }
 
-    /* 小田原提灯風 */
+    /* 暗闇で光る小田原提灯風 */
     #lantern {
       width: 60vw;
       max-width: 220px;
       height: 70vw;
       max-height: 260px;
       margin: 20px auto;
-      background: linear-gradient(to bottom, #ffffff 0%, #f0f0f0 100%);
-      border: 3px solid #000;
+      background: radial-gradient(circle at 50% 50%, #ffffff 0%, #f0f0f0 60%, #888888 100%);
+      border: 3px solid #222;
       border-radius: 100px / 140px;
       display: flex;
       align-items: center;
+      justify-content: center;
+      color: #000;
+      font-size: 14vw;
+      font-weight: bold;
+      box-shadow: 0 0 30px 10px rgba(255,255,200,0.5); /* 光る感じ */
+      position: relative;
+    }
+
+    #lantern::before, #lantern::after {
+      content: '';
+      position: absolute;
+      width: 40%;
+      height: 5px;
+      background: #222;
+      left: 30%;
+      border-radius: 3px;
+    }
+    #lantern::before { top: -10px; }
+    #lantern::after { bottom: -10px; }
+
+    button {
+      background: #ff8a65;
+      color: white;
+      border: none;
+      padding: 14px 35px;
+      margin-top: 20px;
+      font-size: 1.3em;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+      transition: all 0.2s ease-in-out;
+    }
+
+    button:hover {
+      background: #ff7043;
+      transform: scale(1.05);
+    }
+
+    #result {
+      font-size: 2.2em;
+      margin-top: 25px;
+      color: #ffd700;
+      font-weight: bold;
+      text-shadow: 0 0 6px #ffd700;
+    }
+
+    #extraMessage {
+      font-size: 1.3em;
+      margin-top: 12px;
+      color: #eee;
+      padding: 0 15px;
+    }
+
+    #recommendation {
+      font-size: 1.3em;
+      margin-top: 15px;
+      color: #fff;
+      font-weight: bold;
+      padding: 0 15px;
+    }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 1.8em; }
+      #lantern { width: 65vw; height: 75vw; font-size: 16vw; }
+      button { font-size: 1.2em; padding: 12px 30px; }
+      #result { font-size: 2em; }
+      #extraMessage { font-size: 1.2em; }
+      #recommendation { font-size: 1.2em; }
+    }
+  </style>
+</head>
+<body>
+  <h1>✨ おみくじ ✨</h1>
+  <div id="lantern">？</div>
+  <button id="drawBtn">おみくじを引く</button>
+  <div id="result"></div>
+  <div id="extraMessage"></div>
+  <div id="recommendation"></div>
+
+  <script>
+    const omikujiSet = [
+      { fortune: "大吉", kanji: "灯", message: "灯のようにあなたの周りが明るく照らされる一日です。", recommendation: "おすすめ商品：和菓子 菜の花 の「焼きモンブラン」（渋皮栗入り）をHaRuNe内ムーンカフェでどうぞ。" },
+      { fortune: "吉", kanji: "実", message: "努力が実を結び、思わぬ成果が期待できます。", recommendation: "おすすめ商品：小田原かまぼこ本陣の「揚げかまセット（8種）」で味の実りを感じて。" },
+      { fortune: "中吉", kanji: "未", message: "未来への準備を始めると良い流れが訪れます。", recommendation: "おすすめ商品：小田原田中屋本店の「佃煮セット」で伝統の味を。" },
+      { fortune: "小吉", kanji: "凪", message: "心が穏やかに整う一日。小さな喜びを大切に。", recommendation: "おすすめ商品：Takumi館の「リサイクルウッドキーホルダー」で自然を感じて。" },
+      { fortune: "末吉", kanji: "歓", message: "小さな喜びや出会いが、あなたの心を和ませます。", recommendation: "おすすめ商品：和菓子 菜の花 の「月のうさぎ」など銘菓をお試しあれ。" },
+      { fortune: "凶", kanji: "福", message: "小さな不運もありますが、その先には福が待っています。", recommendation: "おすすめ商品：最中工房 小田原種秀 の「小田原城最中」で福を呼び込みましょう。" }
+    ];
+
+    const btn = document.getElementById("drawBtn");
+    const lantern = document.getElementById("lantern");
+    const result = document.getElementById("result");
+    const extraMessage = document.getElementById("extraMessage");
+    const recommendation = document.getElementById("recommendation");
+
+    btn.addEventListener("click", () => {
+      const index = Math.floor(Math.random() * omikujiSet.length);
+      const pick = omikujiSet[index];
+
+      lantern.textContent = pick.kanji;
+      result.textContent = "今日の運勢: " + pick.fortune;
+      extraMessage.textContent = pick.message;
+      recommendation.textContent = pick.recommendation;
+    });
+  </script>
+</body>
+</html>      align-items: center;
       justify-content: center;
       color: #000;
       font-size: 14vw;
