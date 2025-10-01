@@ -10,7 +10,7 @@
     text-align: center;
     margin: 0;
     padding: 0;
-    background-color: #0b0b30; /* 夜空 */
+    background-color: #0b0b30;
     color: white;
     display: flex;
     flex-direction: column;
@@ -25,7 +25,7 @@
     text-shadow: 0 0 8px #ffd700;
   }
 
-  /* 提灯スタイル */
+  /* 提灯 */
   .lantern-wrapper {
     position: relative;
     width: 200px;
@@ -38,15 +38,9 @@
     background: linear-gradient(to bottom, #fff 0%, #f5f5f5 100%);
     border: 3px solid #222;
     border-radius: 100px / 140px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 80px;
-    font-weight: bold;
-    color: #000;
+    position: relative;
   }
 
-  /* 上下の吊りひも */
   #lantern::before {
     content: '';
     position: absolute;
@@ -69,16 +63,64 @@
     background: #c33;
   }
 
+  /* おみくじ紙 */
+  #omikuji-paper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 120px;
+    min-height: 150px;
+    background: #fff;
+    border: 2px solid #222;
+    border-radius: 5px;
+    color: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: transform 0.5s ease;
+  }
+
+  #omikuji-paper.show {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  #omikuji-kanji {
+    font-size: 60px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  #result {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  #extraMessage {
+    font-size: 16px;
+    margin-top: 5px;
+  }
+
+  #recommendation {
+    font-size: 16px;
+    margin-top: 5px;
+    font-weight: bold;
+  }
+
   button {
     background: #ff8a65;
     color: white;
     border: none;
-    padding: 14px 35px;
-    font-size: 1.3em;
+    padding: 12px 30px;
+    font-size: 1.2em;
     border-radius: 50px;
     cursor: pointer;
     box-shadow: 0 5px 10px rgba(0,0,0,0.3);
-    transition: 0.2s;
+    margin-top: 20px;
   }
 
   button:hover {
@@ -86,69 +128,48 @@
     transform: scale(1.05);
   }
 
-  #result {
-    font-size: 2em;
-    color: #ffd700;
-    font-weight: bold;
-    margin-top: 20px;
-    text-shadow: 0 0 6px #ffd700;
-  }
-
-  #extraMessage {
-    font-size: 1.2em;
-    margin-top: 10px;
-    color: #eee;
-    padding: 0 15px;
-  }
-
-  #recommendation {
-    font-size: 1.2em;
-    margin-top: 15px;
-    font-weight: bold;
-    padding: 0 15px;
-  }
-
   @media (max-width:480px){
-    #lantern { height: 210px; font-size: 70px; }
-    button { font-size: 1.2em; padding: 12px 30px; }
-    #result { font-size: 1.8em; }
-    #extraMessage, #recommendation { font-size: 1em; }
+    #omikuji-paper { width: 100px; min-height: 120px; }
+    #omikuji-kanji { font-size: 50px; }
+    #result { font-size: 22px; }
+    #extraMessage, #recommendation { font-size: 14px; }
   }
 </style>
 </head>
 <body>
 <h1>✨ おみくじ ✨</h1>
 <div class="lantern-wrapper">
-  <div id="lantern">？</div>
+  <div id="lantern">
+    <div id="omikuji-paper">
+      <div id="omikuji-kanji">？</div>
+      <div id="result"></div>
+      <div id="extraMessage"></div>
+      <div id="recommendation"></div>
+    </div>
+  </div>
 </div>
 <button id="drawBtn">おみくじを引く</button>
-<div id="result"></div>
-<div id="extraMessage"></div>
-<div id="recommendation"></div>
 
 <script>
 const omikujiSet = [
-  { fortune: "大吉", kanji: "灯", message: "灯のように周りを明るく照らし、幸運が広がる日です。", recommendation: "和菓子 菜の花 「焼きモンブラン」" },
-  { fortune: "大吉", kanji: "灯", message: "あなたの明るさが周囲を照らし、良い縁が訪れます。", recommendation: "ムーンカフェ 「抹茶パフェ」" },
-
-  { fortune: "吉", kanji: "実", message: "努力が実を結び、嬉しい成果を得られる日です。", recommendation: "小田原かまぼこ本陣 「揚げかまセット」" },
-  { fortune: "吉", kanji: "実", message: "小さな成功が積み重なり、日々の充実を感じられます。", recommendation: "小田原お土産館 「干物セット」" },
-
-  { fortune: "中吉", kanji: "未", message: "未来への準備を始めると良い流れが訪れます。", recommendation: "田中屋本店 「佃煮セット」" },
-  { fortune: "中吉", kanji: "未", message: "これからの計画が順調に進み、運気が開けます。", recommendation: "小田原地元スイーツ 「かまぼこケーキ」" },
-
-  { fortune: "小吉", kanji: "凪", message: "心が穏やかに整い、平穏な時間が過ごせます。", recommendation: "Takumi館 「リサイクルウッドキーホルダー」" },
-  { fortune: "小吉", kanji: "凪", message: "静かな気持ちで過ごすと小さな幸せが見つかります。", recommendation: "小田原カフェ 「焼き菓子セット」" },
-
-  { fortune: "末吉", kanji: "歓", message: "小さな喜びや出会いが心を和ませます。", recommendation: "菜の花 「月のうさぎ」" },
-  { fortune: "末吉", kanji: "歓", message: "周囲の人との触れ合いに楽しみが生まれます。", recommendation: "地元和菓子店 「季節の和菓子」" },
-
-  { fortune: "凶", kanji: "福", message: "小さな不運もありますが、その先には福が待っています。", recommendation: "最中工房 小田原種秀 「小田原城最中」" },
-  { fortune: "凶", kanji: "福", message: "慎重に行動すれば、困難を乗り越え福が訪れます。", recommendation: "小田原お土産館 「福袋」" }
+  { fortune: "大吉", kanji: "灯", message: "灯のように周りを明るく照らし、幸運が広がる日です。", recommendation: "和菓子 菜の花 「焼きモンブラン」", color:"#ff0000" },
+  { fortune: "大吉", kanji: "灯", message: "あなたの明るさが周囲を照らし、良い縁が訪れます。", recommendation: "ムーンカフェ 「抹茶パフェ」", color:"#ff4500" },
+  { fortune: "吉", kanji: "実", message: "努力が実を結び、嬉しい成果を得られる日です。", recommendation: "小田原かまぼこ本陣 「揚げかまセット」", color:"#ff8c00" },
+  { fortune: "吉", kanji: "実", message: "小さな成功が積み重なり、日々の充実を感じられます。", recommendation: "小田原お土産館 「干物セット」", color:"#ffa500" },
+  { fortune: "中吉", kanji: "未", message: "未来への準備を始めると良い流れが訪れます。", recommendation: "田中屋本店 「佃煮セット」", color:"#ffd700" },
+  { fortune: "中吉", kanji: "未", message: "これからの計画が順調に進み、運気が開けます。", recommendation: "小田原地元スイーツ 「かまぼこケーキ」", color:"#f0e68c" },
+  { fortune: "小吉", kanji: "凪", message: "心が穏やかに整い、平穏な時間が過ごせます。", recommendation: "Takumi館 「リサイクルウッドキーホルダー」", color:"#87ceeb" },
+  { fortune: "小吉", kanji: "凪", message: "静かな気持ちで過ごすと小さな幸せが見つかります。", recommendation: "小田原カフェ 「焼き菓子セット」", color:"#00bfff" },
+  { fortune: "末吉", kanji: "歓", message: "小さな喜びや出会いが心を和ませます。", recommendation: "菜の花 「月のうさぎ」", color:"#32cd32" },
+  { fortune: "末吉", kanji: "歓", message: "周囲の人との触れ合いに楽しみが生まれます。", recommendation: "地元和菓子店 「季節の和菓子」", color:"#228b22" },
+  { fortune: "凶", kanji: "福", message: "小さな不運もありますが、その先には福が待っています。", recommendation: "最中工房 小田原種秀 「小田原城最中」", color:"#8b0000" },
+  { fortune: "凶", kanji: "福", message: "慎重に行動すれば、困難を乗り越え福が訪れます。", recommendation: "小田原お土産館 「福袋」", color:"#a52a2a" }
 ];
 
 const btn = document.getElementById("drawBtn");
 const lantern = document.getElementById("lantern");
+const paper = document.getElementById("omikuji-paper");
+const kanjiEl = document.getElementById("omikuji-kanji");
 const result = document.getElementById("result");
 const extraMessage = document.getElementById("extraMessage");
 const recommendation = document.getElementById("recommendation");
@@ -157,11 +178,4 @@ btn.addEventListener("click", () => {
   const index = Math.floor(Math.random() * omikujiSet.length);
   const pick = omikujiSet[index];
 
-  lantern.textContent = pick.kanji;
-  result.textContent = "今日の運勢: " + pick.fortune;
-  extraMessage.textContent = pick.message;
-  recommendation.textContent = pick.recommendation;
-});
-</script>
-</body>
-</html>
+  kanjiEl.textContent = pick.kan
