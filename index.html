@@ -25,11 +25,17 @@
     text-shadow: 0 0 8px #ffd700;
   }
 
-  /* 提灯のスタイル */
-  #lantern {
+  /* 提灯スタイル */
+  .lantern-wrapper {
+    position: relative;
     width: 200px;
+    margin: 20px 0;
+  }
+
+  #lantern {
+    width: 100%;
     height: 260px;
-    background-color: #fff;
+    background: linear-gradient(to bottom, #fff 0%, #f5f5f5 100%);
     border: 3px solid #222;
     border-radius: 100px / 140px;
     display: flex;
@@ -38,22 +44,29 @@
     font-size: 80px;
     font-weight: bold;
     color: #000;
-    box-shadow: 0 0 30px 15px rgba(255,255,200,0.6); /* 光のグロー */
-    margin: 20px 0;
-    animation: glow 2s infinite alternate, sway 3s infinite ease-in-out;
   }
 
-  /* 光るアニメーション */
-  @keyframes glow {
-    0% { box-shadow: 0 0 20px 10px rgba(255,255,200,0.4); }
-    100% { box-shadow: 0 0 40px 20px rgba(255,255,200,0.8); }
+  /* 上下の吊りひも */
+  #lantern::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 30px;
+    background: #333;
   }
 
-  /* 揺れるアニメーション */
-  @keyframes sway {
-    0% { transform: rotate(-2deg); }
-    50% { transform: rotate(2deg); }
-    100% { transform: rotate(-2deg); }
+  #lantern::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 20px;
+    background: #c33;
   }
 
   button {
@@ -96,7 +109,7 @@
   }
 
   @media (max-width:480px){
-    #lantern { width: 160px; height: 210px; font-size: 70px; }
+    #lantern { height: 210px; font-size: 70px; }
     button { font-size: 1.2em; padding: 12px 30px; }
     #result { font-size: 1.8em; }
     #extraMessage, #recommendation { font-size: 1em; }
@@ -105,7 +118,9 @@
 </head>
 <body>
 <h1>✨ おみくじ ✨</h1>
-<div id="lantern">？</div>
+<div class="lantern-wrapper">
+  <div id="lantern">？</div>
+</div>
 <button id="drawBtn">おみくじを引く</button>
 <div id="result"></div>
 <div id="extraMessage"></div>
@@ -113,12 +128,23 @@
 
 <script>
 const omikujiSet = [
-  { fortune: "大吉", kanji: "灯", message: "灯のようにあなたの周りが明るく照らされる一日です。", recommendation: "おすすめ商品：和菓子 菜の花 の「焼きモンブラン」をHaRuNe内ムーンカフェでどうぞ。" },
-  { fortune: "吉", kanji: "実", message: "努力が実を結び、思わぬ成果が期待できます。", recommendation: "おすすめ商品：小田原かまぼこ本陣の「揚げかまセット（8種）」で味の実りを感じて。" },
-  { fortune: "中吉", kanji: "未", message: "未来への準備を始めると良い流れが訪れます。", recommendation: "おすすめ商品：小田原田中屋本店の「佃煮セット」で伝統の味を。" },
-  { fortune: "小吉", kanji: "凪", message: "心が穏やかに整う一日。小さな喜びを大切に。", recommendation: "おすすめ商品：Takumi館の「リサイクルウッドキーホルダー」で自然を感じて。" },
-  { fortune: "末吉", kanji: "歓", message: "小さな喜びや出会いが、あなたの心を和ませます。", recommendation: "おすすめ商品：和菓子 菜の花 の「月のうさぎ」など銘菓をお試しあれ。" },
-  { fortune: "凶", kanji: "福", message: "小さな不運もありますが、その先には福が待っています。", recommendation: "おすすめ商品：最中工房 小田原種秀 の「小田原城最中」で福を呼び込みましょう。" }
+  { fortune: "大吉", kanji: "灯", message: "灯のように周りを明るく照らし、幸運が広がる日です。", recommendation: "和菓子 菜の花 「焼きモンブラン」" },
+  { fortune: "大吉", kanji: "灯", message: "あなたの明るさが周囲を照らし、良い縁が訪れます。", recommendation: "ムーンカフェ 「抹茶パフェ」" },
+
+  { fortune: "吉", kanji: "実", message: "努力が実を結び、嬉しい成果を得られる日です。", recommendation: "小田原かまぼこ本陣 「揚げかまセット」" },
+  { fortune: "吉", kanji: "実", message: "小さな成功が積み重なり、日々の充実を感じられます。", recommendation: "小田原お土産館 「干物セット」" },
+
+  { fortune: "中吉", kanji: "未", message: "未来への準備を始めると良い流れが訪れます。", recommendation: "田中屋本店 「佃煮セット」" },
+  { fortune: "中吉", kanji: "未", message: "これからの計画が順調に進み、運気が開けます。", recommendation: "小田原地元スイーツ 「かまぼこケーキ」" },
+
+  { fortune: "小吉", kanji: "凪", message: "心が穏やかに整い、平穏な時間が過ごせます。", recommendation: "Takumi館 「リサイクルウッドキーホルダー」" },
+  { fortune: "小吉", kanji: "凪", message: "静かな気持ちで過ごすと小さな幸せが見つかります。", recommendation: "小田原カフェ 「焼き菓子セット」" },
+
+  { fortune: "末吉", kanji: "歓", message: "小さな喜びや出会いが心を和ませます。", recommendation: "菜の花 「月のうさぎ」" },
+  { fortune: "末吉", kanji: "歓", message: "周囲の人との触れ合いに楽しみが生まれます。", recommendation: "地元和菓子店 「季節の和菓子」" },
+
+  { fortune: "凶", kanji: "福", message: "小さな不運もありますが、その先には福が待っています。", recommendation: "最中工房 小田原種秀 「小田原城最中」" },
+  { fortune: "凶", kanji: "福", message: "慎重に行動すれば、困難を乗り越え福が訪れます。", recommendation: "小田原お土産館 「福袋」" }
 ];
 
 const btn = document.getElementById("drawBtn");
