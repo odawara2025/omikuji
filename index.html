@@ -2,185 +2,155 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>HaRuNe小田原 おみくじ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>小田原おみくじ</title>
   <style>
     body {
-      font-family: 'Hiragino Mincho ProN', 'Yu Mincho', serif;
-      background-color: #fefcf8;
-      text-align: center;
-      padding: 30px;
-      color: #333;
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      background-image: radial-gradient(circle at center, #222 0%, #000 80%);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-family: "Yu Mincho", "Hiragino Mincho Pro", serif;
     }
 
-    h1 {
-      color: #b71c1c;
-      font-size: 32px;
-      margin-bottom: 15px;
-    }
-
-    #lantern {
-      width: 180px;
-      height: 220px;
-      margin: 20px auto;
-      background: radial-gradient(circle, #ffffff 70%, #e0e0e0 100%);
-      border: 4px solid #333;
-      border-radius: 80px / 120px;
+    .lantern {
+      width: 220px;
+      height: 260px;
+      background: radial-gradient(ellipse at center, #fff 0%, #ddd 90%);
+      border: 3px solid #aaa;
+      border-radius: 50% / 55%;
       position: relative;
       display: flex;
-      align-items: center;
       justify-content: center;
-      font-size: 60px;
-      color: #d32f2f;
-      font-weight: bold;
-      box-shadow: 0 0 20px rgba(255, 240, 200, 0.8);
+      align-items: center;
+      box-shadow: 0 0 40px rgba(255,255,200,0.3);
+      transition: opacity 0.6s;
     }
 
-    #lantern::before, #lantern::after {
-      content: '';
+    .lantern::before, .lantern::after {
+      content: "";
       position: absolute;
-      width: 40%;
-      height: 6px;
-      background: #333;
-      left: 30%;
+      width: 100%;
+      height: 5px;
+      background: #444;
+      left: 0;
     }
-    #lantern::before { top: -15px; }
-    #lantern::after { bottom: -15px; }
+
+    .lantern::before { top: -10px; }
+    .lantern::after { bottom: -10px; }
+
+    .kanji {
+      font-size: 60px;
+      color: #222;
+    }
 
     button {
-      background: #d32f2f;
+      margin-top: 30px;
+      padding: 15px 40px;
+      font-size: 22px;
+      font-family: "Hiragino Kaku Gothic ProN", sans-serif;
+      background-color: #d90000;
       color: white;
       border: none;
-      padding: 12px 25px;
-      margin-top: 15px;
-      font-size: 18px;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
-      font-family: 'Hiragino Kaku Gothic ProN', sans-serif;
-      transition: 0.3s;
+      box-shadow: 0 4px #a00000;
     }
 
-    button:hover {
-      background: #b71c1c;
+    button:active {
+      box-shadow: 0 2px #700000;
+      transform: translateY(2px);
     }
 
-    #resultBox {
+    .omikuji {
       display: none;
-      background: #fffef8;
-      border: 2px solid #d4af37;
-      width: 80%;
-      max-width: 400px;
-      margin: 30px auto;
-      padding: 20px;
+      background: #fafaf0;
+      border: 4px solid #d9c8a1;
+      padding: 25px;
+      width: 85%;
+      max-width: 420px;
+      color: #000;
       text-align: center;
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
-      border-radius: 8px;
-      font-family: 'Hiragino Mincho ProN', serif;
+      box-shadow: 0 0 40px rgba(255,255,255,0.2);
+      font-size: 20px;
+      border-radius: 12px;
     }
 
-    #result {
-      font-size: 36px;
-      color: #c62828;
-      font-weight: bold;
-      margin-bottom: 10px;
+    .omikuji h2 {
+      font-size: 40px;
+      color: #c00000;
+      margin: 10px 0;
     }
 
-    #kanji {
-      font-size: 28px;
-      margin-bottom: 10px;
-      color: #444;
+    .omikuji h3 {
+      font-size: 30px;
+      margin: 8px 0;
     }
 
-    #message {
-      font-size: 18px;
-      margin-bottom: 15px;
-      color: #333;
-    }
-
-    #recommendation {
-      font-size: 16px;
-      color: #333;
-    }
-
-    #recommendation a {
-      color: #1976d2;
+    .omikuji a {
+      display: inline-block;
+      margin-top: 15px;
+      color: #007bff;
       text-decoration: none;
       font-weight: bold;
+      font-size: 20px;
     }
 
-    #recommendation a:hover {
+    .omikuji a:hover {
       text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      .kanji { font-size: 70px; }
+      .omikuji h2 { font-size: 46px; }
+      .omikuji h3 { font-size: 34px; }
+      .omikuji { font-size: 22px; }
+      button { font-size: 26px; padding: 18px 45px; }
     }
   </style>
 </head>
 <body>
-  <h1>✨ HaRuNe小田原 おみくじ ✨</h1>
-  <div id="lantern">？</div>
+  <div class="lantern" id="lantern">
+    <div class="kanji">福</div>
+  </div>
   <button id="drawBtn">おみくじを引く</button>
 
-  <div id="resultBox">
-    <div id="result"></div>
-    <div id="kanji"></div>
-    <div id="message"></div>
-    <div id="recommendation"></div>
+  <div class="omikuji" id="omikujiResult">
+    <h2 id="fortune"></h2>
+    <h3 id="kanjiResult"></h3>
+    <p id="message"></p>
+    <p id="item"></p>
+    <a id="shopLink" href="#" target="_blank">▶ お店を見る</a>
   </div>
 
   <script>
-    const omikujiSet = [
-      {
-        fortune: "大吉",
-        kanji: "灯",
-        message: "灯のように周囲を明るく照らし、温かい縁が訪れる日です。",
-        recommendation: 'おすすめ：<a href="https://www.harune-odawara.com/shop-guide/nanohanamooncafe.html" target="_blank">和菓子 菜の花</a> の「焼きモンブラン」'
-      },
-      {
-        fortune: "吉",
-        kanji: "実",
-        message: "努力が実を結び、成果が現れる幸運の日。",
-        recommendation: 'おすすめ：<a href="https://www.kamaboko.com/" target="_blank">鈴廣かまぼこ本店</a> の「揚げかまセット」'
-      },
-      {
-        fortune: "中吉",
-        kanji: "未",
-        message: "未来への一歩を踏み出すチャンスが訪れます。",
-        recommendation: 'おすすめ：<a href="https://www.tanakaya-honten.co.jp/" target="_blank">田中屋本店</a> の「佃煮セット」'
-      },
-      {
-        fortune: "小吉",
-        kanji: "凪",
-        message: "心穏やかに過ごせば小さな幸運が訪れます。",
-        recommendation: 'おすすめ：<a href="https://www.harune-odawara.jp/shop/takumi/" target="_blank">Takumi館</a> の「木製キーホルダー」'
-      },
-      {
-        fortune: "末吉",
-        kanji: "歓",
-        message: "小さな喜びや出会いが心を豊かにしてくれます。",
-        recommendation: 'おすすめ：<a href="https://www.nanohana.co.jp/" target="_blank">菜の花</a> の「月のうさぎ」'
-      },
-      {
-        fortune: "凶",
-        kanji: "福",
-        message: "一見不運に見えても、やがて福に変わる兆しがあります。",
-        recommendation: 'おすすめ：<a href="https://odawaratanahide.com/" target="_blank">最中工房 小田原種秀</a> の「小田原城最中」'
-      }
+    const fortunes = [
+      { kanji: "灯", fortune: "大吉", message: "あなたの道を明るく照らす光が差し込みます。挑戦を恐れず進みましょう！", item: "湘南ゴールドソフトクリーム（江之浦オレンジ園カフェ）", link: "https://harune-odawara.jp/shop/enoura-orange/" },
+      { kanji: "実", fortune: "吉", message: "努力がしっかり実を結ぶ時期。焦らずコツコツ積み上げて。", item: "みかん最中（和菓子 菜の花）", link: "https://harune-odawara.jp/shop/nanohana/" },
+      { kanji: "未", fortune: "中吉", message: "未来に向けた一歩を踏み出すとき。新しい出会いに恵まれそうです。", item: "季節限定スムージー（カフェクラリタ）", link: "https://harune-odawara.jp/shop/clarita/" },
+      { kanji: "凪", fortune: "小吉", message: "穏やかな日々の中に小さな幸せを見つけられるでしょう。", item: "箱根ビール（鈴廣かまぼこ）", link: "https://harune-odawara.jp/shop/suzuhiro/" },
+      { kanji: "歓", fortune: "末吉", message: "喜びを分かち合うことで運気が上昇します。友人との時間を大切に。", item: "おだわらプリン（ういろうカフェ）", link: "https://harune-odawara.jp/shop/uirou-cafe/" },
+      { kanji: "福", fortune: "凶", message: "一見ついていないことも、後で大きな学びになります。前向きに。", item: "鯵の押寿司（東華軒）", link: "https://harune-odawara.jp/shop/toukaken/" }
     ];
 
-    const lantern = document.getElementById("lantern");
-    const btn = document.getElementById("drawBtn");
-    const resultBox = document.getElementById("resultBox");
-    const result = document.getElementById("result");
-    const kanji = document.getElementById("kanji");
-    const message = document.getElementById("message");
-    const recommendation = document.getElementById("recommendation");
+    document.getElementById("drawBtn").addEventListener("click", function() {
+      const random = fortunes[Math.floor(Math.random() * fortunes.length)];
+      document.getElementById("fortune").innerText = random.fortune;
+      document.getElementById("kanjiResult").innerText = random.kanji;
+      document.getElementById("message").innerText = random.message;
+      document.getElementById("item").innerText = `おすすめ商品：${random.item}`;
+      document.getElementById("shopLink").href = random.link;
 
-    btn.addEventListener("click", () => {
-      const pick = omikujiSet[Math.floor(Math.random() * omikujiSet.length)];
-      lantern.style.display = "none"; // 提灯を消す
-      btn.style.display = "none"; // ボタンを消す
-      resultBox.style.display = "block"; // おみくじ表示
-      result.textContent = pick.fortune;
-      kanji.textContent = pick.kanji;
-      message.textContent = pick.message;
-      recommendation.innerHTML = pick.recommendation; // ←リンクが有効！
+      document.getElementById("lantern").style.display = "none";
+      document.getElementById("drawBtn").style.display = "none";
+      document.getElementById("omikujiResult").style.display = "block";
     });
   </script>
 </body>
