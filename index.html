@@ -20,6 +20,7 @@
       letter-spacing: 3px;
     }
 
+    /* 提灯 */
     #lantern {
       width: 220px;
       height: 260px;
@@ -35,6 +36,11 @@
       font-weight: bold;
       color: #222;
       box-shadow: 0 0 40px rgba(255, 230, 150, 0.4);
+      transition: box-shadow 0.3s;
+    }
+
+    #lantern.glow {
+      box-shadow: 0 0 60px rgba(255, 230, 150, 0.8);
     }
 
     #lantern::before, #lantern::after {
@@ -185,8 +191,12 @@
       countdown--;
       if(countdown > 0){
         lantern.textContent = countdown;
+        // 光るアニメーション
+        lantern.classList.toggle("glow");
       } else {
         clearInterval(interval);
+        lantern.classList.remove("glow");
+
         // おみくじをランダムに選ぶ
         const index = Math.floor(Math.random() * omikujiSet.length);
         const pick = omikujiSet[index];
