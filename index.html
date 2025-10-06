@@ -1,192 +1,241 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>おみくじ</title>
-  <style>
-    body {
-      font-family: 'Hiragino Mincho Pro', 'Yu Mincho', serif;
-      background: radial-gradient(circle at center, #0d0d0d 60%, #000 100%);
-      text-align: center;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>おみくじ（漢字大きめ）</title>
+<style>
+  /* --- 全体 --- */
+  :root{
+    --bg:#0b0b30;
+    --paper-bg:#f9f7f2;
+    --accent:#b71c1c;
+    --text:#222;
+  }
+  html,body{height:100%;margin:0;padding:0;}
+  body{
+    font-family: "Hiragino Mincho Pro","Yu Mincho","Yu Mincho Demibold","TakaoMincho","serif";
+    background-color: var(--bg);
+    color: #fff;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    overflow:hidden;
+  }
+  h1{
+    margin:20px 0 8px 0;
+    color:#fff;
+    font-size:20px;
+    letter-spacing:2px;
+  }
 
-    h1 {
-      color: #fff;
-      margin: 20px;
-      font-size: 28px;
-      letter-spacing: 3px;
-    }
+  /* --- 提灯 --- */
+  #lantern {
+    width: 180px;
+    height: 240px;
+    margin: 36px 0 8px 0;
+    background: #fff;
+    border: 3px solid #444;
+    border-radius: 90px / 120px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#222;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+    position:relative;
+  }
+  /* 上下の棒（シンプル） */
+  #lantern::before, #lantern::after{
+    content:"";
+    position:absolute;
+    width:6px;height:26px;background:#333;left:50%;transform:translateX(-50%);
+  }
+  #lantern::before{top:-30px;}
+  #lantern::after{bottom:-26px;background:#b71c1c;height:18px;bottom:-18px;}
 
-    /* 提灯 */
-    #lantern {
-      width: 180px;
-      height: 240px;
-      margin: 60px auto;
-      background: radial-gradient(circle at center, #fff 60%, #ddd 100%);
-      border: 4px solid #555;
-      border-radius: 90px / 120px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #333;
-      font-size: 60px;
-      font-weight: bold;
-      text-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
-    }
-    #lantern::before, #lantern::after {
-      content: '';
-      position: absolute;
-      width: 40%;
-      height: 8px;
-      background: #333;
-      left: 30%;
-    }
-    #lantern::before { top: -18px; }
-    #lantern::after { bottom: -18px; }
+  /* --- ボタン --- */
+  #drawBtn{
+    background:#c62828;
+    color:#fff;
+    border:none;
+    padding:12px 26px;
+    font-size:16px;
+    border-radius:8px;
+    cursor:pointer;
+    box-shadow:0 6px 14px rgba(0,0,0,0.4);
+  }
+  #drawBtn:active{transform:translateY(2px);}
 
-    button {
-      background: #c62828;
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      font-size: 18px;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 20px;
-      font-family: 'Hiragino Mincho Pro', 'Yu Mincho', serif;
-    }
-    button:hover {
-      background: #b71c1c;
-    }
+  /* --- おみくじ紙（全画面） --- */
+  #omikujiPaper{
+    display:none;
+    position:fixed;
+    inset:0;
+    background: var(--paper-bg);
+    box-sizing:border-box;
+    padding:40px 16px;
+    overflow:auto;
+    -webkit-overflow-scrolling:touch;
+  }
 
-    /* おみくじ結果紙 */
-    #omikujiPaper {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #f9f7f2;
-      color: #222;
-      font-family: 'Hiragino Mincho Pro', 'Yu Mincho', serif;
-      text-align: center;
-      padding: 40px 20px;
-      box-sizing: border-box;
-      background-image: radial-gradient(#eee 1px, transparent 1px);
-      background-size: 20px 20px;
-      overflow-y: auto;
-    }
+  .paper-inner{
+    width: min(760px,92%);
+    margin: 0 auto;
+    background: linear-gradient(180deg,#fff9ef,#fcf9f5);
+    border: 2px solid #d2b79a;
+    border-radius:12px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+    padding:32px 24px;
+    box-sizing:border-box;
+    text-align:center;
+  }
 
-    #omikujiPaper .kanji {
-      font-size: 120px;
-      color: #b71c1c;
-      font-weight: bold;
-      margin-top: 50px;
-      text-shadow: 2px 2px 3px rgba(0,0,0,0.1);
-    }
+  /* 漢字（↑一番大きく） */
+  .kanji{
+    font-size:160px; /* デスクトップ基準 */
+    line-height:0.9;
+    color: var(--accent);
+    font-weight:700;
+    margin:6px 0 6px 0;
+    letter-spacing:4px;
+  }
 
-    #omikujiPaper .fortune {
-      font-size: 48px;
-      color: #333;
-      margin-top: 10px;
-      margin-bottom: 30px;
-      font-family: "Hannari", "Yu Mincho", serif;
-      border-bottom: 2px solid #b71c1c;
-      display: inline-block;
-      padding: 0 10px;
-    }
+  /* 運勢（漢字の下で小さめ） */
+  .fortune{
+    font-size:52px; /* 漢字より小さめに */
+    color: var(--text);
+    font-weight:700;
+    margin:8px 0 18px 0;
+    border-bottom:3px solid var(--accent);
+    display:inline-block;
+    padding:6px 18px;
+  }
 
-    #omikujiPaper .message {
-      font-size: 20px;
-      margin: 30px auto;
-      max-width: 80%;
-      line-height: 1.8;
-    }
+  .message{
+    font-size:18px;
+    color: #333;
+    margin-top:18px;
+    line-height:1.9;
+  }
 
-    #omikujiPaper .recommendation {
-      font-size: 18px;
-      margin-top: 40px;
-      color: #444;
-    }
+  .recommendation{
+    margin-top:22px;
+    font-size:18px;
+    color:#444;
+    font-weight:700;
+  }
 
-    #backBtn {
-      background: #c62828;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      font-size: 18px;
-      border-radius: 8px;
-      margin-top: 50px;
-      cursor: pointer;
-    }
-  </style>
+  #backBtn{
+    margin-top:28px;
+    background: #c62828;
+    color:#fff;
+    border:none;
+    padding:10px 18px;
+    font-size:16px;
+    border-radius:8px;
+    cursor:pointer;
+  }
+
+  /* --- モバイル調整 --- */
+  @media (max-width:480px){
+    h1{font-size:18px;}
+    #lantern{width:150px;height:200px;}
+    .kanji{font-size:96px;}
+    .fortune{font-size:34px;}
+    .message,.recommendation{font-size:15px;}
+    .paper-inner{padding:20px;}
+  }
+</style>
 </head>
 <body>
   <h1>✨ おみくじ ✨</h1>
-  <div id="lantern">？</div>
-  <button id="drawBtn">おみくじを引く</button>
 
-  <!-- 結果表示部分 -->
-  <div id="omikujiPaper">
-    <div class="kanji" id="kanji"></div>
-    <div class="fortune" id="fortune"></div>
-    <div class="message" id="message"></div>
-    <div class="recommendation" id="recommendation"></div>
-    <button id="backBtn">もう一度引く</button>
+  <!-- 提灯（消える） -->
+  <div id="lantern" aria-hidden="true">?</div>
+
+  <!-- 引くボタン -->
+  <button id="drawBtn" aria-label="おみくじを引く">おみくじを引く</button>
+
+  <!-- 結果（全画面表示） -->
+  <div id="omikujiPaper" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="paper-inner" id="paperInner">
+      <div class="kanji" id="kanji">？</div>
+      <div class="fortune" id="fortune">---</div>
+      <div class="message" id="message"></div>
+      <div class="recommendation" id="recommendation"></div>
+      <button id="backBtn">もう一度引く</button>
+    </div>
   </div>
 
-  <script>
-    const omikujiSet = [
-      { fortune: "大吉", kanji: "灯", message: "あなたの心の光が周囲を温かく照らします。前向きな一歩を踏み出す日。", recommendation: "おすすめ商品：和菓子 菜の花『焼きモンブラン』で心を灯して。" },
-      { fortune: "大吉", kanji: "実", message: "努力が実を結び、夢への道が一気に開ける日。信じた道を進みましょう。", recommendation: "おすすめ商品：小田原かまぼこ本陣『揚げかまセット（8種）』で実りの味を。" },
-      { fortune: "中吉", kanji: "未", message: "まだ見ぬ未来が輝いています。準備を始めれば運気上昇。", recommendation: "おすすめ商品：田中屋本店『佃煮詰め合わせ』で穏やかなひとときを。" },
-      { fortune: "中吉", kanji: "凪", message: "静かな風の中に新しい兆し。焦らず今を大切に。", recommendation: "おすすめ商品：Takumi館『リサイクルウッドキーホルダー』で自然のぬくもりを。" },
-      { fortune: "小吉", kanji: "歓", message: "小さな喜びを分かち合うことで大きな幸せに。笑顔が福を呼びます。", recommendation: "おすすめ商品：菜の花『月のうさぎ』で心に歓びを。" },
-      { fortune: "小吉", kanji: "福", message: "小さな出来事の中に福あり。感謝を忘れずに。", recommendation: "おすすめ商品：小田原種秀『小田原城最中』で幸せを味わって。" },
-      { fortune: "末吉", kanji: "灯", message: "小さな光が未来を照らします。希望を忘れずに進みましょう。", recommendation: "おすすめ商品：HaRuNe内カフェ『柚子ティー』で心を明るく。" },
-      { fortune: "末吉", kanji: "実", message: "成果はまだ先ですが、努力を続けることで実りが訪れます。", recommendation: "おすすめ商品：鈴廣『かまぼこ紅白セット』で運気上昇。" },
-      { fortune: "吉", kanji: "未", message: "まだ完成していない夢にチャンスあり。新しいことに挑戦して吉。", recommendation: "おすすめ商品：小田原漬物本舗『梅干し詰め合わせ』で未来に味を。" },
-      { fortune: "吉", kanji: "凪", message: "穏やかな運気。無理をせず、自分のペースで進みましょう。", recommendation: "おすすめ商品：ミナカ小田原『木工細工コースター』で癒しを。" },
-      { fortune: "凶", kanji: "歓", message: "思い通りにいかない時も、笑顔を忘れずに。次の喜びの準備期間です。", recommendation: "おすすめ商品：鈴廣『ぷちかま』で気分を上げて。" },
-      { fortune: "凶", kanji: "福", message: "少しの不運も、福への導き。焦らず前を向きましょう。", recommendation: "おすすめ商品：和菓子 菜の花『福うさぎ』で福を呼び込んで。" }
-    ];
+<script>
+  // 12パターン（運勢×2） — 漢字の意味を反映した文言と商品
+  const omikujiSet = [
+    { fortune:"大吉", kanji:"灯", message:"あなたの光が周囲を照らし、物事が好転します。前向きに行動を。", recommendation:"和菓子 菜の花「焼きモンブラン」" },
+    { fortune:"大吉", kanji:"灯", message:"小さな明かりが大きな道を作ります。新しい一歩が吉。", recommendation:"ムーンカフェ「抹茶パフェ」" },
 
-    const lantern = document.getElementById("lantern");
-    const drawBtn = document.getElementById("drawBtn");
-    const omikujiPaper = document.getElementById("omikujiPaper");
-    const backBtn = document.getElementById("backBtn");
+    { fortune:"吉", kanji:"実", message:"努力の成果が形になります。継続が吉を招くでしょう。", recommendation:"小田原かまぼこ本陣「揚げかまセット」" },
+    { fortune:"吉", kanji:"実", message:"実りある出会いが期待できます。身近な縁を大切に。", recommendation:"小田原お土産館「干物セット」" },
 
-    const kanjiEl = document.getElementById("kanji");
-    const fortuneEl = document.getElementById("fortune");
-    const messageEl = document.getElementById("message");
-    const recommendationEl = document.getElementById("recommendation");
+    { fortune:"中吉", kanji:"未", message:"未来のための準備が吉を呼びます。計画を練って一歩を。", recommendation:"田中屋本店「佃煮詰め合わせ」" },
+    { fortune:"中吉", kanji:"未", message:"まだ形にならないことがこれから育ちます。焦らず進めましょう。", recommendation:"小田原地元スイーツ「かまぼこケーキ」" },
 
-    drawBtn.addEventListener("click", () => {
-      const pick = omikujiSet[Math.floor(Math.random() * omikujiSet.length)];
+    { fortune:"小吉", kanji:"凪", message:"凪のように心穏やかに過ごすと小さな幸運がやってきます。", recommendation:"Takumi館「リサイクルウッドキーホルダー」" },
+    { fortune:"小吉", kanji:"凪", message:"波が静まる時に新しい発見があります。落ち着いて過ごして吉。", recommendation:"小田原カフェ「焼き菓子セット」" },
 
-      lantern.style.display = "none";
-      drawBtn.style.display = "none";
-      document.querySelector("h1").style.display = "none";
+    { fortune:"末吉", kanji:"歓", message:"歓びを分かち合うことで運気が育ちます。誰かと笑顔を。", recommendation:"菜の花「月のうさぎ」" },
+    { fortune:"末吉", kanji:"歓", message:"小さな楽しみが心に残る日。素朴な喜びを大切に。", recommendation:"地元和菓子店「季節の和菓子」" },
 
-      kanjiEl.textContent = pick.kanji;
-      fortuneEl.textContent = pick.fortune;
-      messageEl.textContent = pick.message;
-      recommendationEl.textContent = pick.recommendation;
+    { fortune:"凶", kanji:"福", message:"一時の困難があっても、その先に福が待っています。慎重に進めて。", recommendation:"最中工房 小田原種秀「小田原城最中」" },
+    { fortune:"凶", kanji:"福", message:"不運は学びの時。冷静に対処すれば福に変わります。", recommendation:"小田原お土産館「福袋」" }
+  ];
 
-      omikujiPaper.style.display = "block";
-    });
+  const lantern = document.getElementById('lantern');
+  const drawBtn = document.getElementById('drawBtn');
+  const omikujiPaper = document.getElementById('omikujiPaper');
+  const kanjiEl = document.getElementById('kanji');
+  const fortuneEl = document.getElementById('fortune');
+  const messageEl = document.getElementById('message');
+  const recommendationEl = document.getElementById('recommendation');
+  const backBtn = document.getElementById('backBtn');
 
-    backBtn.addEventListener("click", () => {
-      omikujiPaper.style.display = "none";
-      lantern.style.display = "flex";
-      drawBtn.style.display = "inline-block";
-      document.querySelector("h1").style.display = "block";
-    });
-  </script>
+  drawBtn.addEventListener('click', () => {
+    // ランダムで一つ選ぶ
+    const pick = omikujiSet[Math.floor(Math.random() * omikujiSet.length)];
+
+    // 提灯とタイトルとボタンを隠す
+    lantern.style.display = 'none';
+    drawBtn.style.display = 'none';
+    document.querySelector('h1').style.display = 'none';
+
+    // 結果をセット（漢字が大きく、運勢はその下に小さめ）
+    kanjiEl.textContent = pick.kanji;
+    fortuneEl.textContent = pick.fortune;
+    messageEl.textContent = pick.message;
+    recommendationEl.textContent = "おすすめ：" + pick.recommendation;
+
+    // 表示
+    omikujiPaper.style.display = 'block';
+    omikujiPaper.setAttribute('aria-hidden','false');
+
+    // スクロールトップ（モバイルで中央表示されやすくする）
+    window.scrollTo({top:0,behavior:'instant'});
+  });
+
+  backBtn.addEventListener('click', () => {
+    // 元に戻す
+    omikujiPaper.style.display = 'none';
+    omikujiPaper.setAttribute('aria-hidden','true');
+    lantern.style.display = 'flex';
+    drawBtn.style.display = 'inline-block';
+    document.querySelector('h1').style.display = 'block';
+
+    // 内容リセット
+    kanjiEl.textContent = '？';
+    fortuneEl.textContent = '---';
+    messageEl.textContent = '';
+    recommendationEl.textContent = '';
+  });
+</script>
 </body>
 </html>
