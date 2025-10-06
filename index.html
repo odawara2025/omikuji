@@ -20,7 +20,6 @@
       letter-spacing: 3px;
     }
 
-    /* 提灯 */
     #lantern {
       width: 220px;
       height: 260px;
@@ -50,7 +49,6 @@
     #lantern::before { top: -15px; }
     #lantern::after { bottom: -15px; }
 
-    /* ボタン中央配置 */
     .button-container {
       display: flex;
       justify-content: center;
@@ -72,7 +70,6 @@
       background: #c92c3b;
     }
 
-    /* おみくじ結果 */
     #omikujiPaper {
       display: none;
       position: fixed;
@@ -140,59 +137,72 @@
 </head>
 <body>
 
-  <h1>✨ 小田原おみくじ ✨</h1>
+<h1>✨ 小田原おみくじ ✨</h1>
 
-  <div id="lantern">？</div>
+<div id="lantern">？</div>
 
-  <div class="button-container">
-    <button id="drawBtn">おみくじを引く</button>
-  </div>
+<div class="button-container">
+  <button id="drawBtn">おみくじを引く</button>
+</div>
 
-  <div id="omikujiPaper">
-    <div class="fortune" id="fortune"></div>
-    <div class="kanji" id="kanji"></div>
-    <div class="message" id="message"></div>
-    <div class="link" id="recommendation"></div>
-  </div>
+<div id="omikujiPaper">
+  <div class="fortune" id="fortune"></div>
+  <div class="kanji" id="kanji"></div>
+  <div class="message" id="message"></div>
+  <div class="link" id="recommendation"></div>
+</div>
 
-  <script>
-    const omikujiSet = [
-      { fortune: "大吉", kanji: "灯", message: "灯のようにあなたの周りが明るく照らされる一日です。", recommendation: '<a href="https://www.nanohana.co.jp/" target="_blank">和菓子 菜の花：「焼きモンブラン」</a>' },
-      { fortune: "大吉", kanji: "灯", message: "周りの人の笑顔があなたの光になります。", recommendation: '<a href="https://www.nanohana.co.jp/" target="_blank">和菓子 菜の花：「月のうさぎ」</a>' },
-      { fortune: "吉", kanji: "実", message: "努力が実を結び、思わぬ成果が期待できます。", recommendation: '<a href="https://www.kamaboko.com/" target="_blank">鈴廣かまぼこ：「あげかま詰合せ」</a>' },
-      { fortune: "吉", kanji: "実", message: "地道な積み重ねが、豊かな実りをもたらします。", recommendation: '<a href="https://www.kamaboko.com/" target="_blank">鈴廣かまぼこ：「手づくり体験セット」</a>' },
-      { fortune: "中吉", kanji: "未", message: "未来への準備を始めると良い流れが訪れます。", recommendation: '<a href="https://tanakaya-odawara.com/" target="_blank">田中屋本店：「昆布佃煮詰合せ」</a>' },
-      { fortune: "中吉", kanji: "未", message: "新しいことを始める勇気が幸運を呼びます。", recommendation: '<a href="https://tanakaya-odawara.com/" target="_blank">田中屋本店：「磯の香り海苔」</a>' },
-      { fortune: "小吉", kanji: "凪", message: "心が穏やかに整う一日。小さな喜びを大切に。", recommendation: '<a href="https://takumi-kan.com/" target="_blank">Takumi館：「木製お守りチャーム」</a>' },
-      { fortune: "小吉", kanji: "凪", message: "静けさの中で、新たな気づきが訪れます。", recommendation: '<a href="https://takumi-kan.com/" target="_blank">Takumi館：「漆塗り小物」</a>' },
-      { fortune: "末吉", kanji: "歓", message: "小さな喜びや出会いが、あなたの心を和ませます。", recommendation: '<a href="https://www.nanohana.co.jp/" target="_blank">菜の花：「どら焼き ほほえみ」</a>' },
-      { fortune: "末吉", kanji: "歓", message: "笑顔が集まり、穏やかな幸せが広がります。", recommendation: '<a href="https://www.nanohana.co.jp/" target="_blank">菜の花：「あづき茶まんじゅう」</a>' },
-      { fortune: "凶", kanji: "福", message: "小さな不運もありますが、その先には福が待っています。", recommendation: '<a href="https://tanashu.jp/" target="_blank">最中工房 小田原種秀：「小田原城最中」</a>' },
-      { fortune: "凶", kanji: "福", message: "心を整えれば、福は自然と訪れます。", recommendation: '<a href="https://tanashu.jp/" target="_blank">最中工房 小田原種秀：「栗最中」</a>' }
-    ];
+<script>
+  const omikujiSet = [
+    { fortune: "大吉", kanji: "灯", message: "灯のようにあなたの周りが明るく照らされる一日です。", recommendation: '<a href="https://www.nanohana.co.jp/" target="_blank">和菓子 菜の花：「焼きモンブラン」</a>' },
+    { fortune: "大吉", kanji: "灯", message: "周りの人の笑顔があなたの光になります。", recommendation: '<a href="https://www.nanohana.co.jp/" target="_blank">和菓子 菜の花：「月のうさぎ」</a>' },
+    { fortune: "吉", kanji: "実", message: "努力が実を結び、思わぬ成果が期待できます。", recommendation: '<a href="https://www.kamaboko.com/" target="_blank">鈴廣かまぼこ：「あげかま詰合せ」</a>' },
+    { fortune: "吉", kanji: "実", message: "地道な積み重ねが、豊かな実りをもたらします。", recommendation: '<a href="https://www.kamaboko.com/" target="_blank">鈴廣かまぼこ：「手づくり体験セット」</a>' },
+    { fortune: "中吉", kanji: "未", message: "未来への準備を始めると良い流れが訪れます。", recommendation: '<a href="https://tanakaya-odawara.com/" target="_blank">田中屋本店：「昆布佃煮詰合せ」</a>' },
+    { fortune: "中吉", kanji: "未", message: "新しいことを始める勇気が幸運を呼びます。", recommendation: '<a href="https://tanakaya-odawara.com/" target="_blank">田中屋本店：「磯の香り海苔」</a>' },
+    { fortune: "小吉", kanji: "凪", message: "心が穏やかに整う一日。小さな喜びを大切に。", recommendation: '<a href="https://takumi-kan.com/" target="_blank">Takumi館：「木製お守りチャーム」</a>' },
+    { fortune: "小吉", kanji: "凪", message: "静けさの中で、新たな気づきが訪れます。", recommendation: '<a href="https://takumi-kan.com/" target="_blank">Takumi館：「漆塗り小物」</a>' },
+    { fortune: "末吉", kanji: "歓", message: "小さな喜びや出会いが、あなたの心を和ませます。", recommendation: '<a href="https://www.nanohana.co.jp/" target="_blank">菜の花：「どら焼き ほほえみ」</a>' },
+    { fortune: "末吉", kanji: "歓", message: "笑顔が集まり、穏やかな幸せが広がります。", recommendation: '<a href="https://www.nanohana.co.jp/" target="_blank">菜の花：「あづき茶まんじゅう」</a>' },
+    { fortune: "凶", kanji: "福", message: "小さな不運もありますが、その先には福が待っています。", recommendation: '<a href="https://tanashu.jp/" target="_blank">最中工房 小田原種秀：「小田原城最中」</a>' },
+    { fortune: "凶", kanji: "福", message: "心を整えれば、福は自然と訪れます。", recommendation: '<a href="https://tanashu.jp/" target="_blank">最中工房 小田原種秀：「栗最中」</a>' }
+  ];
 
-    const btn = document.getElementById("drawBtn");
-    const lantern = document.getElementById("lantern");
-    const paper = document.getElementById("omikujiPaper");
-    const fortune = document.getElementById("fortune");
-    const kanji = document.getElementById("kanji");
-    const message = document.getElementById("message");
-    const recommendation = document.getElementById("recommendation");
+  const btn = document.getElementById("drawBtn");
+  const lantern = document.getElementById("lantern");
+  const paper = document.getElementById("omikujiPaper");
+  const fortune = document.getElementById("fortune");
+  const kanji = document.getElementById("kanji");
+  const message = document.getElementById("message");
+  const recommendation = document.getElementById("recommendation");
 
-    btn.addEventListener("click", () => {
-      const index = Math.floor(Math.random() * omikujiSet.length);
-      const pick = omikujiSet[index];
+  btn.addEventListener("click", () => {
+    let countdown = 3;
+    lantern.textContent = countdown;
+    btn.disabled = true;
 
-      lantern.style.display = "none";
-      btn.parentElement.style.display = "none";
-      paper.style.display = "block";
+    const interval = setInterval(() => {
+      countdown--;
+      if(countdown > 0){
+        lantern.textContent = countdown;
+      } else {
+        clearInterval(interval);
+        // おみくじをランダムに選ぶ
+        const index = Math.floor(Math.random() * omikujiSet.length);
+        const pick = omikujiSet[index];
 
-      fortune.textContent = pick.fortune;
-      kanji.textContent = pick.kanji;
-      message.textContent = pick.message;
-      recommendation.innerHTML = `今日のおすすめ商品はこちら！<br>タップしてお店をチェック → ${pick.recommendation}`;
-    });
-  </script>
+        lantern.style.display = "none";
+        btn.parentElement.style.display = "none";
+        paper.style.display = "block";
+
+        fortune.textContent = pick.fortune;
+        kanji.textContent = pick.kanji;
+        message.textContent = pick.message;
+        recommendation.innerHTML = `今日のおすすめ商品はこちら！<br>タップしてお店をチェック → ${pick.recommendation}`;
+      }
+    }, 1000);
+  });
+</script>
 
 </body>
 </html>
