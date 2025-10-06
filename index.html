@@ -35,12 +35,13 @@
       font-size: 80px;
       font-weight: bold;
       color: #222;
-      box-shadow: 0 0 40px rgba(255, 230, 150, 0.4);
-      transition: box-shadow 0.3s;
+      box-shadow: 0 0 40px rgba(255, 180, 80, 0.3);
+      transition: box-shadow 0.3s, background 0.3s;
     }
 
     #lantern.glow {
-      box-shadow: 0 0 60px rgba(255, 230, 150, 0.8);
+      background: radial-gradient(circle at center, #ffe8b0, #ffb84d);
+      box-shadow: 0 0 60px rgba(255, 160, 50, 0.8), 0 0 100px rgba(255, 140, 40, 0.6);
     }
 
     #lantern::before, #lantern::after {
@@ -191,7 +192,7 @@
       countdown--;
       if(countdown > 0){
         lantern.textContent = countdown;
-        // 光るアニメーション
+        // 暖色系の光のアニメーション
         lantern.classList.toggle("glow");
       } else {
         clearInterval(interval);
